@@ -1,11 +1,26 @@
-module Mapping
+module MappingRobots
 
 using Ev3
+import Ev3: port_name,
+            values,
+            position,
+            position_sp,
+            count_per_rot,
+            speed_sp,
+            speed_regulation,
+            polarity,
+            command,
+            stop
+
 using Behaviors
 using AffineTransforms
 
 import Base: start, next, done, +
 include("mapping_behaviors.jl")
+
+export construct_remote_robot,
+       run_mapping,
+       Sides
 
 type Sides{T}
     right::T
@@ -73,7 +88,7 @@ type RobotConfig
     meters_per_revolution::Number
     gyro_port_name::AbstractString
     ultrasound_port_name::AbstractString
-    motor_port_names::Sides{AbstractString}
+    motor_port_names::Sides
     head_port_name::AbstractString
     distance_between_wheels::Number
     T_origin_to_ultrasound::AffineTransform
@@ -134,7 +149,7 @@ end
 function run_mapping(robot::Robot; timeout=30, initial_pose=tformeye(2))
     behaviors = setup_mapping_behaviors(timeout)
 
-    current_behaviors = behaviors.starting
+    current_behaviors = behaviors.start
 
     state = State(initial_pose,
                   Sides(0.0, 0.0),
@@ -164,7 +179,7 @@ function run_mapping(robot::Robot; timeout=30, initial_pose=tformeye(2))
     local_map
 end
 
-function default_remote_robot(hostname)
+function construct_remote_robot(hostname)
     meters_per_revolution = 37.2 * 2.54 / 100 / 5 
     # 37.2 inches in 5 revolutions
     gyro_port = "in4"
@@ -186,4 +201,4 @@ function default_remote_robot(hostname)
     robot
 end
 
-# end
+end
