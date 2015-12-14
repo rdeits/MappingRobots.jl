@@ -20,7 +20,8 @@ include("mapping_behaviors.jl")
 
 export construct_remote_robot,
        run_mapping,
-       Sides
+       Sides,
+       Map
 
 type Sides{T}
     right::T
