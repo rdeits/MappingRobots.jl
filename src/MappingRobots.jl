@@ -102,11 +102,12 @@ type Robot
 end
 
 function Robot(config::RobotConfig)
-    motors = Sides(Motor(config.motor_port_names.right, config.hostname), Motor(config.motor_port_names.left, config.hostname))
-    head = Motor(config.head_port_name, config.hostname)
+    socket = connect_to_robot(config.hostname)
+    motors = Sides(Motor(config.motor_port_names.right, socket), Motor(config.motor_port_names.left, socket))
+    head = Motor(config.head_port_name, socket)
     odos = Sides(Odometer(motors.right, config.meters_per_revolution), Odometer(motors.left, config.meters_per_revolution))
-    gyro = Sensor(config.gyro_port_name, config.hostname)
-    ultrasound = Sensor(config.ultrasound_port_name, config.hostname)
+    gyro = Sensor(config.gyro_port_name, socket)
+    ultrasound = Sensor(config.ultrasound_port_name, socket)
     sensors = MappingSensors(gyro, ultrasound, odos)
     Robot(config, motors, head, sensors)
 end
