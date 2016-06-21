@@ -148,6 +148,8 @@ function prep!(robot::Robot)
     # robot.motors.right.attr.speed_regulation("on")
     # robot.motors.left.attr.speed_regulation("on")
     robot.head.attr.speed_sp(130)
+    map(Ev3.stop, robot.motors)
+    Ev3.stop(robot.head)
     # speed_regulation(robot.motors.right, "on")
     # speed_regulation(robot.motors.left, "on")
     # speed_regulation(robot.head, "on")
@@ -170,10 +172,11 @@ function run_mapping(robot::Robot; timeout=Second(30), initial_pose=tformeye(2))
     state = State(initial_pose,
                   Sides(0.0, 0.0),
                   -scaled_values(robot.sensors.gyro)[1] * pi / 180)
-    sensor_data = SensorData()
     start_time = unix2datetime(time())
 
-    behavior_inputs = BehaviorInputs(robot, Millisecond(0), state, sensor_data)
+    behavior_inputs = BehaviorInputs(robot, Millisecond(0), state, SensorData())
+    update_sensors!(behavior_inputs)
+    update_state!(behavior_inputs)
     local_map = Map()
     prep!(robot)
 

@@ -21,21 +21,21 @@ end
 
 # function stop(robot, t, state, input)
 function stop(inputs::BehaviorInputs)
-    stop(inputs.robot.motors.right, "brake")
-    stop(inputs.robot.motors.left, "brake")
-    stop(inputs.robot.head, "coast")
+    Ev3.stop(inputs.robot.motors.right, "brake")
+    Ev3.stop(inputs.robot.motors.left, "brake")
+    Ev3.stop(inputs.robot.head, "coast")
 end
 
 # function look_right(robot, t, state, input)
 function look_right(inputs::BehaviorInputs)
-    servo_absolute(inputs.robot.head, Degrees(80))
+    servo_absolute(inputs.robot.head, Degrees(3 * 80))
     # position_sp(robot.head, 80 * 3)
     # command(robot.head, "run-to-abs-pos")
 end
 
 # function look_left(robot, t, state, input)
 function look_left(inputs::BehaviorInputs)
-    servo_absolute(inputs.robot.head, Degrees(-80))
+    servo_absolute(inputs.robot.head, Degrees(-3 * 80))
     # position_sp(robot.head, -80 * 3)
     # command(robot.head, "run-to-abs-pos")
 end
