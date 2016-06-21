@@ -110,7 +110,7 @@ function update_sensors!(inputs::BehaviorInputs)
     inputs.sensor_data.gyro = -scaled_values(inputs.robot.sensors.gyro)[1] * pi / 180
     inputs.sensor_data.ultrasound = scaled_values(inputs.robot.sensors.ultrasound)[1] / 100
     inputs.sensor_data.total_wheel_distances = Sides(map(update!, inputs.robot.sensors.odos)...)
-    inputs.sensor_data.head_angle = -position(inputs.robot.head) * 12 / 36 * pi / 180
+    inputs.sensor_data.head_angle = -inputs.robot.head.attr.position() * 12 / 36 * pi / 180
 end
 
 
@@ -158,7 +158,7 @@ end
 
 function shutdown!(robot::Robot)
     map(Ev3.stop, robot.motors)
-    stop(robot.head)
+    Ev3.stop(robot.head)
 end
 
 include("mapping_behaviors.jl")
