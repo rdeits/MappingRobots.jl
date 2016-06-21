@@ -2,18 +2,6 @@ module MappingRobots
 
 using Ev3
 using Base.Dates
-# import Ev3: port_name,
-#             values,
-#             position,
-#             position_sp,
-#             count_per_rot,
-#             speed_sp,
-#             speed_regulation,
-#             polarity,
-#             command,
-#             stop,
-#             time_sp
-
 using StateMachineIterators
 using AffineTransforms
 
