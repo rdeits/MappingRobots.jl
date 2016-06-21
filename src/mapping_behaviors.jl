@@ -1,8 +1,8 @@
 
 # function drive_forward(robot, t, state, input)
 function drive_forward(inputs::BehaviorInputs)
-    run(inputs.robot.motors.right, 60)
-    run(inputs.robot.motors.left, 60)
+    run_continuous(inputs.robot.motors.right, 60)
+    run_continuous(inputs.robot.motors.left, 60)
     # speed_sp(robot.motors.right, 60)
     # speed_sp(robot.motors.left, 60)
     # command(robot.motors.right, "run-timed")
@@ -11,8 +11,8 @@ end
 
 function turn_right(inputs::BehaviorInputs)
 # function turn_right(robot, t, state, input)
-    run(inputs.robot.motors.right, -70)
-    run(inputs.robot.motors.left, 30)
+    run_continuous(inputs.robot.motors.right, -70)
+    run_continuous(inputs.robot.motors.left, 30)
     # speed_sp(robot.motors.right, -70)
     # speed_sp(robot.motors.left, 30)
     # command(robot.motors.right, "run-timed")
