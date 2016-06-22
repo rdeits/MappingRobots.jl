@@ -44,7 +44,8 @@ const mapping_behaviors = Dict(:forward => drive_forward,
                                :turn_right => turn_right,
                                :look_right => look_right,
                                :look_left => look_left,
-                               :stop => stop)
+                               :stop => stop,
+			       :done => (x) -> nothing)
 
 function mapping_state_machines(timeout=Second(30))
     driving_machine = StateMachine(:forward, :done,
