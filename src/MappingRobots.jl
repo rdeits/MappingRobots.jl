@@ -150,8 +150,8 @@ function prep!(robot::Robot)
     # robot.motors.right.attr.speed_regulation("on")
     # robot.motors.left.attr.speed_regulation("on")
     robot.head.attr.speed_sp(130)
-    map(Ev3.stop, robot.motors)
-    Ev3.stop(robot.head)
+    map(stop, robot.motors)
+    stop(robot.head)
     # speed_regulation(robot.motors.right, "on")
     # speed_regulation(robot.motors.left, "on")
     # speed_regulation(robot.head, "on")
@@ -161,8 +161,8 @@ function prep!(robot::Robot)
 end
 
 function shutdown!(robot::Robot)
-    map(Ev3.stop, robot.motors)
-    Ev3.stop(robot.head)
+    map(stop, robot.motors)
+    stop(robot.head)
 end
 
 include("mapping_behaviors.jl")

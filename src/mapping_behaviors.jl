@@ -20,10 +20,10 @@ function turn_right(inputs::BehaviorInputs)
 end
 
 # function stop(robot, t, state, input)
-function stop(inputs::BehaviorInputs)
-    Ev3.stop(inputs.robot.motors.right, "brake")
-    Ev3.stop(inputs.robot.motors.left, "brake")
-    Ev3.stop(inputs.robot.head, "coast")
+function halt(inputs::BehaviorInputs)
+    stop(inputs.robot.motors.right, "brake")
+    stop(inputs.robot.motors.left, "brake")
+    stop(inputs.robot.head, "coast")
 end
 
 # function look_right(robot, t, state, input)
@@ -44,18 +44,16 @@ const mapping_behaviors = Dict(:forward => drive_forward,
                                :turn_right => turn_right,
                                :look_right => look_right,
                                :look_left => look_left,
-                               :stop => stop,
-			       :done => (x) -> nothing)
+                               :halt => halt)
 
 function mapping_state_machines(timeout=Second(30))
-    driving_machine = StateMachine(:forward, :done,
+    driving_machine = StateMachine(:forward, :halt,
         [(:forward, (inputs) -> inputs.sensor_data.ultrasound < 0.25, :turn_right),
          (:turn_right, (inputs) -> inputs.sensor_data.ultrasound > 0.5, :forward),
-         (:forward, (inputs) -> inputs.time > timeout, :stop),
-         (:turn_right, (inputs) -> inputs.time > timeout, :stop),
-         (:stop, (inputs) -> true, :done)])
+         (:forward, (inputs) -> inputs.time > timeout, :halt),
+         (:turn_right, (inputs) -> inputs.time > timeout, :halt)])
 
-    head_machine = StateMachine(:look_right, :done,
+    head_machine = StateMachine(:look_right, :halt,
         [(:look_right, (inputs) -> inputs.sensor_data.head_angle < -pi/4, :look_left),
          (:look_left, (inputs) -> inputs.sensor_data.head_angle > pi/4, :look_right)])
 
