@@ -11,7 +11,8 @@ import Base: start, next, done, +
 
 export run_mapping,
        Sides,
-       Map
+       Map,
+       Robot
 
 type Sides{T}
     right::T
