@@ -111,14 +111,6 @@ function update_sensors!(inputs::BehaviorInputs)
     inputs.sensor_data.head_angle = -inputs.robot.head.io.position() * 12 / 36 * pi / 180
 end
 
-
-# function update_input!(robot::Robot, t, state::State, input::SensorData)
-#     input.gyro = -values(robot.sensors.gyro)[1] * pi / 180
-#     input.ultrasound = values(robot.sensors.ultrasound)[1] / 100
-#     input.total_wheel_distances = Sides(map(update!, robot.sensors.odos)...)
-#     input.head_angle = -position(robot.head) * 12 / 36 * pi / 180
-# end
-
 function update_state!(inputs::BehaviorInputs)
     angle_change = inputs.sensor_data.gyro - inputs.state.last_orientation
     wheel_distances = [getfield(inputs.sensor_data.total_wheel_distances, field) - getfield(inputs.state.last_wheel_distances, field) for field in [:right, :left]]
@@ -126,14 +118,6 @@ function update_state!(inputs::BehaviorInputs)
     inputs.state.last_wheel_distances = inputs.sensor_data.total_wheel_distances
     inputs.state.last_orientation = inputs.sensor_data.gyro
 end
-
-# function update_state!(robot::Robot, t, state::State, input::SensorData)
-#     angle_change = input.gyro - state.last_orientation
-#     wheel_distances = [getfield(input.total_wheel_distances, field) - getfield(state.last_wheel_distances, field) for field in [:right, :left]]
-#     state.pose *= tformrigid([angle_change, mean(wheel_distances), 0])
-#     state.last_wheel_distances = input.total_wheel_distances
-#     state.last_orientation = input.gyro
-# end
 
 type Map
     points::Vector{Tuple{Real, Real}}
@@ -143,18 +127,10 @@ end
 Map() = Map(Tuple{Real,Real}[], AffineTransform[])
 
 function prep!(robot::Robot)
-    # robot.motors.right.io.speed_regulation("on")
-    # robot.motors.left.io.speed_regulation("on")
     robot.head.io.speed_sp(130)
     map(stop, robot.motors)
     stop(robot.head)
 	map(m -> m.io.position(0), robot.motors)
-    # speed_regulation(robot.motors.right, "on")
-    # speed_regulation(robot.motors.left, "on")
-    # speed_regulation(robot.head, "on")
-    # time_sp(robot.motors.right, 1000)
-    # time_sp(robot.motors.left, 1000)
-    # speed_sp(robot.head, 130)
 end
 
 function shutdown!(robot::Robot)
@@ -199,27 +175,6 @@ function run_mapping(robot::Robot; timeout=Second(30), initial_pose=tformeye(2))
     end
     local_map
 end
-#
-#
-#     try
-#         while !all(current_behaviors .== behaviors.final)
-#             t = time() - start_time
-#             update_sensors!(behavior_inputs)
-#             update_state!(behavior_inputs)
-#             if input.ultrasound < 2
-#                 new_map_point = state.pose * robot.config.T_origin_to_ultrasound * tformrotate(input.head_angle) * tformtranslate([input.ultrasound, 0])
-#                 push!(local_map.points, (new_map_point.offset...))
-#             end
-#             push!(local_map.path, state.pose)
-#             current_behaviors = map(b -> next(b, robot, t, state, input), current_behaviors)
-#             map(b -> b.action(robot, t, state, input), current_behaviors)
-#         end
-#     finally
-#         shutdown!(robot)
-#     end
-#
-#     local_map
-# end
 
 function Robot(brick::Brick)
     meters_per_revolution = 37.2 * 2.54 / 100 / 5 # 37.2 inches in 5 revolutions
@@ -232,27 +187,5 @@ function Robot(brick::Brick)
                       distance_between_wheels,
                       T_origin_to_ultrasound))
 end
-
-# function construct_remote_robot(hostname)
-#     meters_per_revolution = 37.2 * 2.54 / 100 / 5
-#     # 37.2 inches in 5 revolutions
-#     gyro_port = "in4"
-#     us_port = "in1"
-#     motor_ports = Sides("outD", "outB")
-#     head_port = "outA"
-#     distance_between_wheels = 4.5
-#     T_origin_to_ultrasound = tformtranslate(0.0254 * [2.0, 0.0])
-#     config = RobotConfig(hostname,
-#                          meters_per_revolution,
-#                          gyro_port,
-#                          us_port,
-#                          motor_ports,
-#                          head_port,
-#                          distance_between_wheels,
-#                          T_origin_to_ultrasound)
-#
-#     robot = Robot(config)
-#     robot
-# end
 
 end
