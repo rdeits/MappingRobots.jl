@@ -152,6 +152,7 @@ function prep!(robot::Robot)
     robot.head.attr.speed_sp(130)
     map(stop, robot.motors)
     stop(robot.head)
+	map(m -> m.attr.position(0), robot.motors)
     # speed_regulation(robot.motors.right, "on")
     # speed_regulation(robot.motors.left, "on")
     # speed_regulation(robot.head, "on")
@@ -177,10 +178,10 @@ function run_mapping(robot::Robot; timeout=Second(30), initial_pose=tformeye(2))
     start_time = unix2datetime(time())
 
     behavior_inputs = BehaviorInputs(robot, Millisecond(0), state, SensorData())
+    prep!(robot)
     update_sensors!(behavior_inputs)
     update_state!(behavior_inputs)
     local_map = Map()
-    prep!(robot)
 
     iters = [StateMachineIterator(machine, () -> behavior_inputs) for machine in machines]
     try
