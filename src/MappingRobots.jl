@@ -20,11 +20,9 @@ type Sides{T}
     left::T
 end
 
-start(sides::Sides) = Val{:right}
-next(sides::Sides, ::Type{Val{:right}}) = (sides.right, Val{:left})
-next(sides::Sides, ::Type{Val{:left}}) = (sides.left, Val{:done})
-done(sides::Sides, ::Type) = false
-done(sides::Sides, ::Type{Val{:done}}) = true
+start(sides::Sides) = :right
+next(sides::Sides, state::Symbol) = (state == :right) ? (sides.right, :left) : (sides.left, :done)
+done(sides::Sides, state::Symbol) = (state == :done)
 
 type Odometer
     motor::Ev3.Device
