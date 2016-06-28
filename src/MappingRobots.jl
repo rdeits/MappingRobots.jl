@@ -39,14 +39,14 @@ type Odometer
 end
 
 function Odometer(motor::Ev3.Device, meters_per_revolution::Real)
-    ticks_per_revolution = motor.attr.count_per_rot()
+    ticks_per_revolution = motor.io.count_per_rot()
     meters_per_tick = meters_per_revolution / ticks_per_revolution
-    current_position = motor.attr.position()
+    current_position = motor.io.position()
     Odometer(motor, ticks_per_revolution, meters_per_tick, current_position, 0.0)
 end
 
 function update!(odo::Odometer)
-    current_position = odo.motor.attr.position()
+    current_position = odo.motor.io.position()
     delta = current_position - odo.last_position
     odo.last_position = current_position
     new_distance = delta * odo.meters_per_tick
@@ -112,7 +112,7 @@ function update_sensors!(inputs::BehaviorInputs)
     inputs.sensor_data.gyro = -scaled_values(inputs.robot.sensors.gyro)[1] * pi / 180
     inputs.sensor_data.ultrasound = scaled_values(inputs.robot.sensors.ultrasound)[1] / 100
     inputs.sensor_data.total_wheel_distances = Sides(map(update!, inputs.robot.sensors.odos)...)
-    inputs.sensor_data.head_angle = -inputs.robot.head.attr.position() * 12 / 36 * pi / 180
+    inputs.sensor_data.head_angle = -inputs.robot.head.io.position() * 12 / 36 * pi / 180
 end
 
 
@@ -147,12 +147,12 @@ end
 Map() = Map(Tuple{Real,Real}[], AffineTransform[])
 
 function prep!(robot::Robot)
-    # robot.motors.right.attr.speed_regulation("on")
-    # robot.motors.left.attr.speed_regulation("on")
-    robot.head.attr.speed_sp(130)
+    # robot.motors.right.io.speed_regulation("on")
+    # robot.motors.left.io.speed_regulation("on")
+    robot.head.io.speed_sp(130)
     map(stop, robot.motors)
     stop(robot.head)
-	map(m -> m.attr.position(0), robot.motors)
+	map(m -> m.io.position(0), robot.motors)
     # speed_regulation(robot.motors.right, "on")
     # speed_regulation(robot.motors.left, "on")
     # speed_regulation(robot.head, "on")
