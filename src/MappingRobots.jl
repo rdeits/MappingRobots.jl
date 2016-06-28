@@ -2,7 +2,7 @@ __precompile__()
 
 module MappingRobots
 
-using Ev3
+using Ev3dev
 using Base.Dates
 using StateMachineIterators
 using AffineTransforms
@@ -25,14 +25,14 @@ next(sides::Sides, state::Symbol) = (state == :right) ? (sides.right, :left) : (
 done(sides::Sides, state::Symbol) = (state == :done)
 
 type Odometer
-    motor::Ev3.Device
+    motor::Ev3dev.Device
     ticks_per_revolution
     meters_per_tick
     last_position
     total_distance
 end
 
-function Odometer(motor::Ev3.Device, meters_per_revolution::Real)
+function Odometer(motor::Ev3dev.Device, meters_per_revolution::Real)
     ticks_per_revolution = motor.io.count_per_rot()
     meters_per_tick = meters_per_revolution / ticks_per_revolution
     current_position = motor.io.position()
