@@ -20,17 +20,11 @@ type Sides{T}
     left::T
 end
 
-start(sides::Sides) = :right
-function next(sides::Sides, state)
-    if state == :right
-        next_state = :left
-    else
-        next_state = :done
-    end
-    getfield(sides, state), next_state
-end
-done(sides::Sides, state) = (state == :done)
-
+start(sides::Sides) = Val{:right}
+next(sides::Sides, ::Type{Val{:right}}) = (sides.right, Val{:left})
+next(sides::Sides, ::Type{Val{:left}}) = (sides.left, Val{:done})
+done(sides::Sides, ::Type) = false
+done(sides::Sides, ::Type{Val{:done}}) = true
 
 type Odometer
     motor::Ev3.Device
