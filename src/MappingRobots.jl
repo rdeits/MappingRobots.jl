@@ -12,7 +12,8 @@ import Base: start, next, done, +
 export run_mapping,
        Sides,
        Map,
-       Robot
+       Robot,
+       Brick
 
 type Sides{T}
     right::T
