@@ -1,0 +1,7 @@
+#!/bin/sh
+
+set -e
+
+mkdir -p $HOME/Ev3
+sshfs -o no_readahead,cache=no robot@ev3dev.local:/ $HOME/Ev3
+
